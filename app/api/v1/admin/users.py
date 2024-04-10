@@ -13,7 +13,7 @@ from app.schemas.users import (
     UpdatePasswordSchema
 )
 from app.core.dependency import DependPermisson
-from app.schemas.response import Success, SuccessExtra, Fail
+from app.schemas.response import Success, Success, Fail
 from app.schemas.users import UserResponseSchema
 from app.models.admin.users import Users
 from app.core.ctx import CTX_USER
@@ -63,7 +63,7 @@ async def list_user(
         await item.to_dict(exclude=("password", ), m2m=True)
         for item in data.items
     ]
-    return SuccessExtra(
+    return Success(
         data=result,
         total=data.total,
         page=data.page,
