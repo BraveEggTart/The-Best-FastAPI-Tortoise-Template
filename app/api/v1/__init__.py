@@ -88,8 +88,9 @@ async def login(login_info: UserLoginSchema):
     )
     await BgTasks.add_task(
         task_record_user_action,
-        action=ActionType.LOGIN,
-        description="系统登陆",
+        user=user,
+        action=ActionType.LOGIN.value,
+        operation="系统登陆",
         detail=f"用户名称: {user.name} 用户ID: {user.id} 登陆了系统",
     )
     logger.info("登陆成功")
