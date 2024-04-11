@@ -107,13 +107,13 @@ async def auth(token: str):
     # await AuthControl.is_authed(token)
     try:
         if token == SECRET_KEY:
-            user = await Users.filter(is_superuser=True).first()
+            user = await Users.get(id=1)
             user_id = user.id
         else:
             decode_data = jwt.decode(
                 token,
                 settings.SECRET_KEY,
-                algorithms=settings.JWT_ALGORITHM
+                algorithms=[settings.JWT_ALGORITHM]
             )
             user_id = decode_data.get("id")
         user = await Users.filter(id=user_id).first()
@@ -123,7 +123,7 @@ async def auth(token: str):
                 detail="Authentication failed"
             )
         CTX_USER.set(user)
-        return user
+        # return user
     except jwt.DecodeError:
         raise HTTPException(status_code=401, detail="无效的Token")
     except jwt.ExpiredSignatureError:
