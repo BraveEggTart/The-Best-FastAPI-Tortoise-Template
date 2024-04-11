@@ -54,7 +54,7 @@ class Users(BaseModel, TimestampMixin):
     avatar = fields.CharField(
         max_length=100,
         description="头像",
-        null=True,
+        default="",
     )
 
     password = fields.CharField(

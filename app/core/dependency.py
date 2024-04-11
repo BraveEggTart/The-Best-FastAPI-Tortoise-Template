@@ -11,17 +11,18 @@ class AuthControl:
     @classmethod
     async def is_authed(
         cls,
-        token: str = Header(..., description="token验证")
+        token: str = Header(..., alias="Authorization", description="token验证")
     ) -> Users:
         try:
-            if token == "dev":
-                user = await Users.filter().first()
+            if token == settings.SECRET_KEY:
+                user = await Users.get(id=1)
                 user_id = user.id
             else:
+                _, token = token.split(" ")
                 decode_data = jwt.decode(
                     token,
                     settings.SECRET_KEY,
-                    algorithms=settings.JWT_ALGORITHM
+                    algorithms=[settings.JWT_ALGORITHM]
                 )
                 user_id = decode_data.get("id")
             user = await Users.filter(id=user_id).first()
