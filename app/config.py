@@ -6,9 +6,8 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     # 项目信息配置
-    NAME: str = "FastAPI Tortoise Template"
-    TITLE: str = "FastAPI Tortoise Template"
-    DESCRIPTION: str = "The Best FastAPI Tortoise Template"
+    TITLE: str = "Platform Backend"
+    DESCRIPTION: str = "Platform Backend"
     VERSION: str = "0.1.0"
 
     # 跨域配置
@@ -17,30 +16,26 @@ class Settings(BaseSettings):
     CORS_ALLOW_METHODS: List = ["*"]
     CORS_ALLOW_HEADERS: List = ["*"]
 
-    # 启动模式配置
-    DEBUG: bool = True
-
     # JWT配置
     JWT_ALGORITHM: str = "HS256"
-    JWT_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 day
+    JWT_TOKEN_EXPIRE_MINUTES: int = 60 * 2
 
     # 项目路径设置
     PROJECT_ROOT: str = os.path.dirname(os.path.dirname(__file__))
     BASE_DIR: str = os.path.abspath(os.path.join(PROJECT_ROOT, os.pardir))
-    LOGS_ROOT: str = os.path.join(PROJECT_ROOT, "logs")
 
-    # 是否生成日志文件
-    LOG: bool = False
-    DATETIME_FORMAT: str = ""
-    # openssl rand -hex 32
-    SECRET_KEY: str = ""
+    # 设定日期格式
+    DATETIME_FORMAT: str = "%Y-%m-%d %H:%M:%S"
     DATETIME_TIMEZONE: str = ""
+    # openssl rand -hex 32
+    SECRET_KEY: str = "32cf914b504263ba5a8983cc35e1ac905cc2dc976293ff12b0d968f0eb7c0fd8"
+    PREFIX: str = "/api"
 
     # APScheduler 持久化存储
-    TASKS_DB: str = ""
+    TASKS_DB: str = "sqlite:///app/db/db.sqlite3"
     # TORTOISE 配置
-    DB_URL: str = ""
-    DB_FILE: str = os.path.join(PROJECT_ROOT, "db/") + "db.sqlite3"
+    DB_URL: str = "sqlite://db.sqlite3"
+    DB_FILE: str = os.path.join(PROJECT_ROOT, "app/db/") + "db.sqlite3"
     TORTOISE_ORM: dict = {
         "connections": {
             "default": {
@@ -53,7 +48,7 @@ class Settings(BaseSettings):
         },
         "apps": {
             "models": {
-                "models": ["app.models", "aerich.models"],
+                "models": ["app.common"],
                 "default_connection": "default",
             },
         },
@@ -63,6 +58,14 @@ class Settings(BaseSettings):
 
     class Config:
         env_file = ".env"
+
+    # Redis 配置
+    redisurl: str = ""
+    REDIS_PORT: str = "6379"
+    REDIS_DB: str = "0"
+    redispass: str = ""
+
+    DEBUGGER: bool = False
 
 
 settings = Settings()

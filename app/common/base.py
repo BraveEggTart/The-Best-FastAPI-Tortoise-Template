@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import TypeVar, Union, List, Tuple
+from typing import TypeVar, Union, List, Tuple, Dict, Optional
 from collections import defaultdict
 
 from tortoise import fields
@@ -16,42 +16,60 @@ class BaseModel(Model):
 
     async def to_dict(
         self,
+        include: Union[List, Tuple] = [],
         exclude: Union[List, Tuple] = [],
         m2m: bool = False,
-    ):
+    ) -> Union[
+        Dict[str, Optional[str]],
+        List[Optional[str]]
+    ]:
         result = {}
-        curr_exclude = []
-        relation_exclude = defaultdict(list)
-        for item in exclude:
-            if '__' in item:
-                field, name = item.split("__", 1)
-                relation_exclude[field].append(name)
-            else:
-                curr_exclude.append(item)
-        remain_field = self._meta.db_fields.difference(set(curr_exclude))
-        for field in remain_field:
+        curr_include, relation_include = self._cut_fields(include, m2m)
+        curr_exclude, relation_exclude = self._cut_fields(exclude, m2m)
+        curr_remain_field = self._meta.db_fields.difference(set(curr_exclude))
+        if len(curr_include) > 0:
+            curr_remain_field = curr_remain_field.intersection(curr_include)
+        for field in curr_remain_field:
             value = getattr(self, field)
             if isinstance(value, datetime):
                 value = value.strftime(settings.DATETIME_FORMAT)
             result[field] = value
         if m2m:
-            for field in self._meta.m2m_fields:
+            relation_remain_field = set(self._meta.m2m_fields)\
+                .intersection(set(relation_include.keys()))
+            for field in relation_remain_field:
                 values = [
                     await item.to_dict(
-                        exclude=relation_exclude[field],
-                        m2m=False
+                        include=relation_include.get(field, []),
+                        exclude=relation_exclude.get(field, []),
+                        m2m=m2m
                     ) for item in await getattr(self, field).all()
                 ]
                 result[field] = values
-        return result
+        return list(result.values())[0]\
+            if len(curr_remain_field) == 1 else result
+
+    def _cut_fields(
+        self,
+        field_list: Union[List[str], Tuple[str]],
+        m2m: bool = False
+    ):
+        curr_fields = []
+        relation_fields = defaultdict(list)
+        for item in field_list:
+            if '__' not in item:
+                curr_fields.append(item)
+            elif m2m:
+                field, name = item.split("__", 1)
+                relation_fields[field].append(name)
+        return curr_fields, dict(relation_fields)
 
     class Meta:
         abstract = True
 
 
 class VersionBaseModel(BaseModel):
-    """基于乐观锁的表单超卖控制模型
-    """
+
     version = fields.IntField()
 
     async def safe_save(self, **kwargs):

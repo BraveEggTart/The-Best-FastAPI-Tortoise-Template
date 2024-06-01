@@ -1,23 +1,18 @@
-import os
+import hashlib
+import logging
 
-from dotenv import load_dotenv
-from passlib import pwd
-from passlib.context import CryptContext
+logger = logging.getLogger(__name__)
 
-load_dotenv()
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+def encrypt_aes256(plain_text: str):
+    hash_object = hashlib.sha256(plain_text.encode())
+    hash_hex = hash_object.hexdigest()
+    return hash_hex
 
 
 def verify_password(
     plain_password: str,
-    hashed_password: str
+    admin_password: str
 ) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
-
-
-def generate_password() -> str:
-    return pwd.genword()
+    logger.error(f'qina{admin_password}hou{encrypt_aes256(plain_password)}')
+    return admin_password == encrypt_aes256(plain_password)
