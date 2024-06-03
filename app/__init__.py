@@ -30,6 +30,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
         # start scheduler
         scheduler.start()
+
         # init data
         await init_db()
         yield

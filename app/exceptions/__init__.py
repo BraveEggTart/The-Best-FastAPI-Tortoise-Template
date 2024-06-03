@@ -1,7 +1,8 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
+from fastapi.requests import Request
+from fastapi.responses import JSONResponse
 from jwt import DecodeError, ExpiredSignatureError
-
-from app.schemas.response import Fail
+from tortoise.exceptions import DoesNotExist
 
 
 def register_exceptions(app: FastAPI):
@@ -10,11 +11,19 @@ def register_exceptions(app: FastAPI):
     async def decode_handle(
         _: Request,
         exc: DecodeError
-    ) -> Fail:
-        return Fail(code=401, msg=str(exc))
+    ) -> JSONResponse:
+        return JSONResponse(status_code=401, content=str(exc))
 
+    @app.exception_handler(ExpiredSignatureError)
     async def expiredsignature_handle(
         _: Request,
         exc: ExpiredSignatureError
-    ) -> Fail:
-        return Fail(code=401, msg=str(exc))
+    ) -> JSONResponse:
+        return JSONResponse(status_code=401, content=str(exc))
+
+    @app.exception_handler(DoesNotExist)
+    async def doesnotexist_handle(
+        _: Request,
+        exc: DoesNotExist
+    ) -> JSONResponse:
+        return JSONResponse(status_code=500, content=str(exc))
