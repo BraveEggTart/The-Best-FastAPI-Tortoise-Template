@@ -17,8 +17,6 @@
                 "--port",
                 "80",
                 "--reload",
-                "--log-config",
-                "${workspaceFolder}/uvicorn_loggin_config.json",
             ],
             "jinja": true
         }

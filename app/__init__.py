@@ -11,11 +11,24 @@ from app.db import init_db
 from app.exceptions import register_exceptions
 from app.middlewares import make_middlewares
 from app.routes import register_routers
-from app.scheduler import scheduler
 
 # 设置日志Level
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+TORTOISE_ORM = {
+    "connections": {
+        "default": f"mysql://{settings.DB_URL}",
+    },
+    "apps": {
+        "models": {
+            "models": ["app.common"],
+            "default_connection": "default",
+        },
+    },
+    "use_tz": False,
+    "timezone": settings.DATETIME_TIMEZONE,
+}
 
 
 @asynccontextmanager
@@ -23,18 +36,18 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     # app startup
     async with RegisterTortoise(
         app,
-        config=settings.TORTOISE_ORM,
+        config=TORTOISE_ORM,
         generate_schemas=True,
     ):
         # db connected
 
-        # start scheduler
-        scheduler.start()
-
         # init data
         await init_db()
+
         yield
+
         # app teardown
+
     # db connections closed
 
 

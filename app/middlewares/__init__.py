@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .auth import AuthMiddleware
 from .logger import LoggerMiddleware
 from .permission import PermissionMiddleware
+from .scheduler import APSchedulerMiddleware
 from app.config import settings
 
 
@@ -25,4 +26,5 @@ def make_middlewares() -> List[Middleware]:
         Middleware(LoggerMiddleware),
         Middleware(AuthMiddleware),
         Middleware(PermissionMiddleware),
+        APSchedulerMiddleware,
     ]
