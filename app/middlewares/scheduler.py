@@ -26,9 +26,9 @@ class SchedulerMiddleware:
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if scope["type"] == "lifespan":
             async with self.scheduler:
-                await self.scheduler.add_schedule(
-                    tick, IntervalTrigger(seconds=1), id="tick"
-                )
+                # await self.scheduler.add_schedule(
+                #     tick, IntervalTrigger(seconds=1), id="tick"
+                # )
                 await scheduler.start_in_background()
                 await self.app(scope, receive, send)
         else:
