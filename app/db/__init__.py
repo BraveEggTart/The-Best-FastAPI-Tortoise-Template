@@ -2,12 +2,7 @@ import logging
 
 from app.common.users import Users
 from app.utils.password import encrypt_aes256
-from .base import (
-    BaseModel,
-    UUIDModel,
-    TimestampMixin,
-    VersionBaseModel,
-)
+from .base import BaseModel
 
 logger = logging.getLogger(__name__)
 
@@ -40,7 +35,4 @@ async def init_db():
 
 __all__ = [
     "BaseModel",
-    "UUIDModel",
-    "TimestampMixin",
-    "VersionBaseModel",
 ]
