@@ -3,7 +3,6 @@ from typing import List
 from fastapi.middleware import Middleware
 from fastapi.middleware.cors import CORSMiddleware
 
-from .auth import AuthMiddleware
 from .logger import LoggerMiddleware
 from .permission import PermissionMiddleware
 from .scheduler import APSchedulerMiddleware
@@ -24,7 +23,6 @@ def make_middlewares() -> List[Middleware]:
             allow_headers=settings.CORS_ALLOW_HEADERS
         ),
         Middleware(LoggerMiddleware),
-        Middleware(AuthMiddleware),
         Middleware(PermissionMiddleware),
         APSchedulerMiddleware,
     ]

@@ -17,6 +17,8 @@
                 "--port",
                 "80",
                 "--reload",
+                "--lifespan",
+                "on",
             ],
             "jinja": true
         }

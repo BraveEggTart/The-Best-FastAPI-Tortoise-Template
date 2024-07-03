@@ -2,7 +2,7 @@ from tortoise import fields
 from tortoise.signals import pre_save, post_save, pre_delete, post_delete
 
 
-from .base import BaseModel, TimestampMixin
+from app.db.base import BaseModel, TimestampMixin
 
 
 class Users(BaseModel, TimestampMixin):

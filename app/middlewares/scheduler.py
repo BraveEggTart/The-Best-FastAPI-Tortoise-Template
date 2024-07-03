@@ -1,4 +1,4 @@
-from datetime import datetime
+import logging
 
 from fastapi.middleware import Middleware
 from sqlalchemy.ext.asyncio import create_async_engine
@@ -9,9 +9,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 
 from app.config import settings
 
-
-def tick():
-    print("Hello, the time is", datetime.now())
+logger = logging.getLogger(__name__)
 
 
 class SchedulerMiddleware:
@@ -25,11 +23,15 @@ class SchedulerMiddleware:
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if scope["type"] == "lifespan":
+            logger.info("开始连接APScheduler数据库")
             async with self.scheduler:
                 # await self.scheduler.add_schedule(
-                #     tick, IntervalTrigger(seconds=1), id="tick"
+                #     schedule_function,
+                #     IntervalTrigger(seconds=60),
+                #     id="schedule_function_name",
                 # )
                 await scheduler.start_in_background()
+                logger.info("定时器添加成功！")
                 await self.app(scope, receive, send)
         else:
             await self.app(scope, receive, send)

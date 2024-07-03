@@ -33,6 +33,14 @@ class Settings(BaseSettings):
 
     # Database
     DB_URL: str = ""
+    # REDIS
+    REDIS_URL: str = ""
+    REDIS_PORT: str = ""
+    REDIS_DB: str = ""
+    REDIS_PASSWORD: str = ""
+
+    # Rate limit per minute
+    RATE_LIMIT_MINUTES: int = 100
 
     DEBUGGER: bool = False
 
