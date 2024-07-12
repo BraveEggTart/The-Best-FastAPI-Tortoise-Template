@@ -42,6 +42,13 @@ class Settings(BaseSettings):
     # Rate limit per minute
     RATE_LIMIT_MINUTES: int = 100
 
+    # Mail Config
+    MAIL_USER: str = ""
+    MAIL_PASSWORD: str = ""
+    MAIL_FROM: str = ""
+    MAIL_PORT: int = 0
+    MAIL_SERVER: str = ""
+
     DEBUGGER: bool = False
 
     class Config:

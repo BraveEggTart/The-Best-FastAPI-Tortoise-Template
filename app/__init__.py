@@ -73,6 +73,15 @@ def create_app() -> FastAPI:
         openapi_url="/openapi.json",
         middleware=make_middlewares(),
         generate_unique_id_function=custom_generate_unique_id,
+        contact={
+            "name": "Brave EggTart",
+            "url": "https://just4dream.club",
+            "email": "braveeggtart@gmail.com",
+        },
+        license_info={
+            "name": "MIT",
+            "url": "https://github.com/BraveEggTart/The-Best-FastAPI-Tortoise-Template/blob/master/LICENSE",
+        },
         lifespan=lifespan,
     )
 
